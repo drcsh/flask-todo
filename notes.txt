@@ -1,0 +1,1 @@
+- There's a problem with the docker settings, it's not reloading the wsgi file, so it must be using a cached version.

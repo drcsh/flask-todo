@@ -1,0 +1,8 @@
+# Docker
+.env
+
+# Python
+*.pyc
+
+# Pycharm
+.idea/
