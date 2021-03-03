@@ -5,7 +5,6 @@ services:
       context: app
       dockerfile: Dockerfile
     container_name: flask
-    image: digitalocean.com/flask-python:3.6
     restart: unless-stopped
     environment:
       APP_ENV: "prod"
@@ -15,13 +14,14 @@ services:
       MONGODB_USERNAME: "${FLASK_DB_USER}"
       MONGODB_PASSWORD: "${FLASK_DB_PASSWORD}"
       MONGODB_HOSTNAME: mongodb
+    ports:
+      - "5000:5000"
     volumes:
-      - appdata:/var/www
+      - .:/opt
     depends_on:
       - mongodb
     networks:
-      - frontend
-      - backend
+      - shared
   mongodb:
     image: mongo:4.0.8
     container_name: mongodb
@@ -36,37 +36,12 @@ services:
     volumes:
       - mongodbdata:/data/db
     networks:
-      - backend
-  webserver:
-    build:
-      context: nginx
-      dockerfile: Dockerfile
-    image: digitalocean.com/webserver:latest
-    container_name: webserver
-    restart: unless-stopped
-    environment:
-      APP_ENV: "prod"
-      APP_NAME: "webserver"
-      APP_DEBUG: "false"
-      SERVICE_NAME: "webserver"
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - nginxdata:/var/log/nginx
-    depends_on:
-      - flask
-    networks:
-      - frontend
-networks:
-  frontend:
-    driver: bridge
-  backend:
-    driver: bridge
+      - shared
 volumes:
   mongodbdata:
     driver: local
   appdata:
     driver: local
-  nginxdata:
-    driver: local
+networks:
+  shared:
+    driver: bridge
