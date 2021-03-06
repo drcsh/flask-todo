@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_pymongo import PyMongo
 
 app = Flask(__name__)
@@ -9,9 +9,11 @@ app.config["MONGO_URI"] = 'mongodb://' + os.environ['MONGODB_USERNAME'] + ':' + 
 mongo = PyMongo(app)
 db = mongo.db
 
+
 @app.route('/')
-def hello_world():
-    return 'Hello World!'
+def index():
+    return render_template('index.html')
+
 
 @app.route('/todo')
 def todo():
@@ -31,8 +33,9 @@ def todo():
         data=data
     )
 
+
 @app.route('/todo', methods=['POST'])
-def createTodo():
+def create_todo():
     data = request.get_json(force=True)
     item = {
         'todo': data['todo']
