@@ -11,6 +11,26 @@
   {% endif %}
 </head>
 <body>
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        <img src="..." class="rounded me-2" alt="...">
+        <strong class="me-auto">Notifications</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        <ul>
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+{% endwith %}
+
 <div id="content" class=".container-xxl">
   {% block content %}
   {% endblock %}

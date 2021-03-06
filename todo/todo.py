@@ -1,10 +1,12 @@
 import os
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, flash, session, redirect, url_for
 from flask_pymongo import PyMongo
 
-app = Flask(__name__)
+from todo import db_functions
 
+app = Flask(__name__)
 app.config["MONGO_URI"] = 'mongodb://' + os.environ['MONGODB_USERNAME'] + ':' + os.environ['MONGODB_PASSWORD'] + '@' + os.environ['MONGODB_HOSTNAME'] + ':27017/' + os.environ['MONGODB_DATABASE']
+app.secret_key = os.environ.get("FLASK_SECRET_KEY")
 
 mongo = PyMongo(app)
 db = mongo.db
@@ -17,32 +19,35 @@ def index():
 
 @app.route('/todo')
 def todo():
-    _todos = db.todo.find()
-
-    todos = []
-    for todo_obj in _todos:
-        item = {
-            'id': str(todo_obj['_id']),
-            'title': todo_obj['title'],
-            'details': todo_obj['details'],
-        }
-        todos.append(item)
-
+    todos = db_functions.get_todos(db)
     return render_template('todos.html', todos=todos)
 
 
-@app.route('/todo', methods=['POST'])
+@app.route('/create')
 def create_todo():
-    data = request.get_json(force=True)
-    item = {
-        'todo': data['todo']
-    }
-    db.todo.insert_one(item)
+    return render_template('new_todo.html')
 
-    return jsonify(
-        status=True,
-        message='To-do saved successfully!'
-    ), 201
+
+@app.route('/create', methods=['POST'])
+def create_todo_submit():
+    print(request.form)
+
+    title = request.form.get('title')
+    details = request.form.get('details')
+    if title:
+        item = {
+            'title': title,
+            'details': details
+        }
+        db.todo.insert_one(item)
+        flash("Added new ToDo!")
+        return redirect(url_for('todo'))
+
+    else:
+        flash("Error: you need to add a title at least to create a ToDo!")
+        return redirect(url_for('create_todo'))
+
+
 
 
 if __name__ == "__main__":

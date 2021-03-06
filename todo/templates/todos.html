@@ -1,20 +1,24 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="container">
-    <p>ToDo form will go here</p>
-  </div>
+  <div class="container" style="margin-bottom: 30px">
+  <h2>
+    ToDo List
+    <small class="text-muted"><a href="{{ url_for('create_todo') }}">Add One</a></small>
+  </h2>
   {% if todos %}
-    <div class="accordion" id="accordionExample">
+    <div class="accordion" id="todoAccordion">
       {% for todo in todos %}
         <div class="accordion-item">
           <h2 class="accordion-header" id="heading{{ todo.id }}">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ todo.id }}"
-                    aria-expanded="true" aria-controls="collapseOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#collapse{{ todo.id }}"
+                    aria-expanded="false" aria-controls="collapse{{ todo.id }}">
               {{ todo.title }}
             </button>
           </h2>
-          <div id="collapse{{ todo.id }}" class="accordion-collapse collapse show" aria-labelledby="heading{{ todo.id }}"
-               data-bs-parent="#accordionExample">
+          <div id="collapse{{ todo.id }}" class="accordion-collapse collapse"
+               aria-labelledby="heading{{ todo.id }}"
+               data-bs-parent="#todoAccordion">
             <div class="accordion-body">
               {{ todo.details }}
             </div>
@@ -22,11 +26,10 @@
         </div>
       {% endfor %}
     </div>
-   {% else %}
-    <div class="container">
+  {% else %}
       <p>
         Your ToDo List is currently empty! Woohoo!
       </p>
-    </div>
   {% endif %}
+  </div>
 {% endblock %}

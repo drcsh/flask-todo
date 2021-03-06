@@ -1,1 +1,0 @@
-- Docker issues fixed, now it's just Flask needs kicked into shape.
