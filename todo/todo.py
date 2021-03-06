@@ -19,19 +19,16 @@ def index():
 def todo():
     _todos = db.todo.find()
 
-    item = {}
-    data = []
-    for todo in _todos:
+    todos = []
+    for todo_obj in _todos:
         item = {
-            'id': str(todo['_id']),
-            'todo': todo['todo']
+            'id': str(todo_obj['_id']),
+            'title': todo_obj['title'],
+            'details': todo_obj['details'],
         }
-        data.append(item)
+        todos.append(item)
 
-    return jsonify(
-        status=True,
-        data=data
-    )
+    return render_template('todos.html', todos=todos)
 
 
 @app.route('/todo', methods=['POST'])
