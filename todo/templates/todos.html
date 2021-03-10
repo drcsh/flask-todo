@@ -21,6 +21,10 @@
                data-bs-parent="#todoAccordion">
             <div class="accordion-body">
               {{ todo.details }}
+              <form id="delete-{{ todo.id }}" method="post" action="{{ url_for('delete_todo') }}">
+                <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                <button class="btn btn-success" type="submit">Complete</button>
+              </form>
             </div>
           </div>
         </div>

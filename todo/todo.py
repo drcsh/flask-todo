@@ -1,4 +1,6 @@
 import os
+
+from bson import ObjectId
 from flask import Flask, request, jsonify, render_template, flash, session, redirect, url_for
 from flask_pymongo import PyMongo
 
@@ -28,9 +30,26 @@ def create_todo():
     return render_template('new_todo.html')
 
 
+@app.route('/delete/', methods=['POST'])
+def delete_todo():
+    todo_id = request.form.get('todo_id')
+    if todo_id:
+        result = db.todo.delete_one(
+            {'_id': ObjectId(todo_id)}
+        )
+
+        if result.deleted_count:
+            flash("ToDo deleted")
+        else:
+            flash(f"No ToDo in DB with id {todo_id}! This shouldn't happen!")
+    else:
+        flash(f"No Todo Specified to Delete {request.form}")
+
+    return redirect(url_for('todo'))
+
+
 @app.route('/create', methods=['POST'])
 def create_todo_submit():
-    print(request.form)
 
     title = request.form.get('title')
     details = request.form.get('details')
