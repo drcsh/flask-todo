@@ -4,8 +4,10 @@ LABEL MAINTAINER="FirstName LastName <example@domain.com>"
 
 WORKDIR /opt
 
-COPY . .
+COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
+
+COPY . .
 
 EXPOSE 5000
 
